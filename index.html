@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gabriel Levi | Back-End Python & Automação</title>
+
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐍</text></svg>">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* Variáveis de Cores (Tema Python: Azul Python #3776ab / Detalhes em contraste) */
+        :root {
+            --bg-color: #111418;
+            --surface-color: #1a1d24;
+            --primary-color: #388ceb;
+            /* Azul vibrante baseado no ecossistema Python */
+            --accent-color: #ffd43b;
+            /* Amarelo Python para destaques sutis */
+            --text-main: #ffffff;
+            --text-muted: #8b949e;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --sidebar-width: 80px;
+            --font-main: 'Inter', sans-serif;
+            --bg-text-color: rgba(255, 255, 255, 0.03);
+        }
+
+        /* Light Mode */
+        body.light-mode {
+            --bg-color: #f8fafc;
+            --surface-color: #ffffff;
+            --primary-color: #2b5b84;
+            /* Azul marinho Python para leitura nítida em fundo claro */
+            --accent-color: #d4a017;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: rgba(0, 0, 0, 0.1);
+            --bg-text-color: rgba(0, 0, 0, 0.03);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Container Principal */
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar (Nav Vertical) */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--bg-color);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem 0;
+            z-index: 1000;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar-logo a {
+            writing-mode: vertical-rl;
+            transform: rotate(-180deg);
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 900;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 3rem;
+            list-style: none;
+        }
+
+        .nav-links li a {
+            writing-mode: vertical-rl;
+            transform: rotate(-180deg);
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        .nav-links li a:hover,
+        .nav-links li a.active {
+            color: var(--primary-color);
+        }
+
+        .sidebar-social {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .sidebar-social a {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            transition: color 0.3s, transform 0.3s;
+        }
+
+        .sidebar-social a:hover {
+            color: var(--primary-color);
+            transform: scale(1.1);
+        }
+
+        /* Main Content */
+        main {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            position: relative;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 2rem;
+            right: 3rem;
+            background: none;
+            border: none;
+            color: var(--text-main);
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 100;
+            transition: color 0.3s;
+        }
+
+        .theme-toggle:hover {
+            color: var(--primary-color);
+        }
+
+        /* Background Text (Decoração de Código Python) */
+        .bg-text {
+            position: absolute;
+            font-size: 8vw;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: 900;
+            color: var(--bg-text-color);
+            writing-mode: vertical-rl;
+            z-index: -1;
+            user-select: none;
+            pointer-events: none;
+            right: 5%;
+            top: 10%;
+            letter-spacing: -2px;
+        }
+
+        section {
+            min-height: 100vh;
+            padding: 8rem 10%;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Hero Section */
+        #home {
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .hero-name {
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .hero-title {
+            font-size: clamp(3.5rem, 8vw, 7rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+            color: var(--text-main);
+        }
+
+        .hero-title span {
+            font-weight: 300;
+        }
+
+        .hero-title .highlight {
+            color: var(--primary-color);
+            display: block;
+        }
+
+        /* Projects Section */
+        #projetos {
+            background-color: var(--bg-color);
+        }
+
+        .project-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 4rem;
+            margin-bottom: 8rem;
+        }
+
+        .project-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .project-info {
+            flex: 1;
+            max-width: 500px;
+        }
+
+        .project-number {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .project-number::after {
+            content: "";
+            display: block;
+            width: 50px;
+            height: 2px;
+            background: var(--primary-color);
+        }
+
+        .project-info h3 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .project-info p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+
+        .btn-view {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 1rem 2.5rem;
+            background: var(--primary-color);
+            color: #ffffff;
+            font-weight: 800;
+            text-transform: uppercase;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+        }
+
+        .btn-view:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(56, 140, 235, 0.25);
+        }
+
+        .project-image {
+            flex: 1;
+            background: var(--surface-color);
+            border-radius: 12px;
+            aspect-ratio: 16/9;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .project-image i {
+            font-size: 5rem;
+            color: var(--border-color);
+        }
+
+        /* About & Skills Section */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .about-text h2 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+        }
+
+        .about-text p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .skill-tag {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            padding: 0.6rem 1.2rem;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .about-image {
+            background: var(--surface-color);
+            border-radius: 50%;
+            width: 100%;
+            max-width: 400px;
+            aspect-ratio: 1;
+            margin: 0 auto;
+            border: 2px solid var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .about-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .project-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .project-image:hover img {
+            transform: scale(1.05);
+        }
+
+        /* Contact Section */
+        #contato {
+            align-items: center;
+            text-align: center;
+        }
+
+        .contact-form {
+            width: 100%;
+            max-width: 600px;
+            margin-top: 3rem;
+            text-align: left;
+        }
+
+        .form-group {
+            margin-bottom: 2.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid var(--border-color);
+            padding: 1rem 0;
+            color: var(--text-main);
+            font-size: 1.2rem;
+            font-family: var(--font-main);
+            transition: border-color 0.3s;
+            resize: none;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-bottom-color: var(--primary-color);
+        }
+
+        .contact-title {
+            font-size: 4rem;
+            font-weight: 900;
+        }
+
+        .contact-title span {
+            color: var(--primary-color);
+        }
+
+        .footer-bottom {
+            margin-top: 5rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            width: 100%;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Responsividade */
+        @media (max-width: 900px) {
+            .sidebar {
+                width: 100%;
+                height: 70px;
+                flex-direction: row;
+                padding: 0 2rem;
+                bottom: 0;
+                top: auto;
+                border-right: none;
+                border-top: 1px solid var(--border-color);
+            }
+
+            .sidebar-logo a {
+                writing-mode: horizontal-tb;
+                transform: none;
+            }
+
+            .nav-links {
+                flex-direction: row;
+                gap: 1.5rem;
+            }
+
+            .nav-links li a {
+                writing-mode: horizontal-tb;
+                transform: none;
+            }
+
+            .sidebar-social {
+                display: none;
+            }
+
+            main {
+                margin-left: 0;
+                margin-bottom: 70px;
+            }
+
+            .bg-text {
+                font-size: 15vw;
+                right: 0;
+            }
+
+            .project-item,
+            .project-item:nth-child(even) {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .project-image {
+                width: 100%;
+            }
+
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-logo">
+                <a href="#home">G. Levi</a>
+            </div>
+
+            <ul class="nav-links">
+                <li><a href="#projetos">Projetos</a></li>
+                <li><a href="#sobre">Sobre</a></li>
+                <li><a href="#contato">Contato</a></li>
+            </ul>
+
+            <div class="sidebar-social">
+                <a href="https://github.com/Biellima2811" target="_blank" title="GitHub"><i
+                        class="fab fa-github"></i></a>
+                <a href="https://www.linkedin.com/in/gabriel-levi-0a3a251b0/" target="_blank" title="LinkedIn"><i
+                        class="fab fa-linkedin-in"></i></a>
+            </div>
+        </nav>
+
+        <main>
+            <button class="theme-toggle" id="themeBtn" aria-label="Toggle Dark/Light Mode">
+                <i class="fas fa-moon"></i>
+            </button>
+
+            <section id="home">
+                <p class="hero-name">Gabriel Levi</p>
+                <h1 class="hero-title">
+                    <i class="fab fa-python" style="font-size: 6rem; color: var(--primary-color);"></i>
+                    Developer<br>
+                    <span class="highlight">+ Back-End Python</span>
+                </h1>
+                <p style="font-size: 1.2rem; color: var(--text-muted); max-width: 600px; margin-bottom: 2rem;">
+                    Transformando gargalos operacionais em sistemas escaláveis. Especialista em construir soluções de
+                    ponta a ponta (End-to-End), automações com Python, integrações de APIs e arquitetura de dados segura.
+                </p>
+                <a href="#projetos" class="btn-view">Ver Projetos <i class="fas fa-arrow-right"></i></a>
+            </section>
+
+            <section id="projetos">
+
+                <!-- CIGS em primeiro lugar dando destaque à automação Python -->
+                <div class="project-item">
+                    <div class="project-info">
+                        <div class="project-number">01</div>
+                        <h3>CIGS Automação</h3>
+                        <p>Central de Integração e Gestão de Servidores focada na eliminação de processos manuais.
+                            Implementação de agentes autônomos, orquestração de scripts via API Flask e integração com AWS S3,
+                            reduzindo intervenções manuais em ambientes críticos.</p>
+                        <a href="https://github.com/Biellima2811/CIGS" target="_blank" class="btn-view">View project <i
+                                class="fas fa-arrow-right"></i></a>
+                    </div>
+                    <div class="project-image">
+                        <img src="CIGSjpg.jpg" alt="CIGS Automação">
+                    </div>
+                </div>
+
+                <div class="project-item">
+                    <div class="project-info">
+                        <div class="project-number">02</div>
+                        <h3>Proton ERP</h3>
+                        <p>Sistema corporativo de Cloud Management. Estruturado com pipelines de engenharia de dados (ETL com
+                            Pandas e SQLAlchemy), modelagem PostgreSQL e controle de concorrência de webservices para
+                            gestão de infraestrutura em nuvem.</p>
+                        <a href="https://github.com/Biellima2811/Proton" target="_blank" class="btn-view">View project
+                            <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                    <div class="project-image">
+                        <img src="proton.png" alt="Proton ERP">
+                    </div>
+                </div>
+
+                <div class="project-item">
+                    <div class="project-info">
+                        <div class="project-number">03</div>
+                        <h3>Sys360</h3>
+                        <p>Plataforma web interativa desenvolvida para monitoramento e gestão completa de processos sistêmicos.
+                            Foco em arquitetura limpa de dados, observabilidade e integração contínua.</p>
+                        <a href="https://github.com/Biellima2811/Sys360Estoque" target="_blank" class="btn-view">View
+                            project <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                    <div class="project-image">
+                        <img src="sys360.jpg" alt="Sys360">
+                    </div>
+                </div>
+            </section>
+
+            <section id="sobre">
+                <div class="bg-text" style="top: 15%;">if __name__ == "__main__":</div>
+                <div class="about-grid">
+                    <div class="about-text">
+                        <h2>Seja Bem-vindo</h2>
+                        <p>Sou um profissional de tecnologia com perfil analítico, focado em resolver
+                            problemas complexos. Tenho paixão por identificar ineficiências em processos empresariais e
+                            atuar proativamente no desenvolvimento de sistemas robustos e automatizados.</p>
+                        <p>Especializado no ecossistema Python (Flask, ETL e automação de infraestrutura), possuo sólida experiência
+                            em modelagem de bancos de dados relacionais, criação de APIs escaláveis e sustentação de
+                            ambientes em nuvem com alta confiabilidade.</p>
+
+                        <div class="skills-container">
+                            <span class="skill-tag"><i class="fab fa-python" style="color: #388ceb;"></i> Python</span>
+                            <span class="skill-tag"><i class="fas fa-pepper-hot" style="color: #ffd43b;"></i> Flask / APIs</span>
+                            <span class="skill-tag"><i class="fas fa-network-wired" style="color: #388ceb;"></i> Automação & DevOps</span>
+                            <span class="skill-tag"><i class="fas fa-database" style="color: #336791;"></i> PostgreSQL</span>
+                            <span class="skill-tag"><i class="fas fa-server" style="color: #cc292b;"></i> SQL Server</span>
+                            <span class="skill-tag"><i class="fab fa-aws" style="color: #ff9900;"></i> AWS / S3</span>
+                        </div>
+                    </div>
+                    <div class="about-image">
+                        <img src="minhafoto.jpg" alt="Gabriel Levi" style="width: 100%; border-radius: 50%;">
+                    </div>
+                </div>
+            </section>
+
+            <section id="contato">
+                <h2 class="contact-title">Say <span>hello</span></h2>
+                <p style="color: var(--text-muted); margin-top: 1rem;">Estou aberto a novos desafios em Back-End Python e
+                    Engenharia de Automação/DevOps. Vamos conversar?</p>
+
+                <form class="contact-form" action="#" onsubmit="enviarEmail(event)">
+                    <div class="form-group">
+                        <label>Your Email</label>
+                        <input type="email" id="email" required placeholder="hello@company.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Message</label>
+                        <textarea id="message" rows="3" required placeholder="Como posso ajudar?"></textarea>
+                    </div>
+                    <button type="submit" class="btn-view"
+                        style="width: 100%; justify-content: center; cursor: pointer; border: none;">
+                        <i class="fas fa-paper-plane"></i> Send message
+                    </button>
+                </form>
+
+                <div class="footer-bottom">
+                    &copy; 2026 Gabriel Levi. Todos os direitos reservados.
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Toggle Dark/Light Mode
+        const themeBtn = document.getElementById('themeBtn');
+        const icon = themeBtn.querySelector('i');
+
+        themeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+
+            if (document.body.classList.contains('light-mode')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        });
+
+        // Envio de e-mail integrado
+        function enviarEmail(e) {
+            e.preventDefault();
+            const usuario = "bielrodrigues2811";
+            const dominio = "gmail.com";
+            const body = document.getElementById('message').value;
+
+            window.location.href = `mailto:${usuario}@${dominio}?subject=Contato pelo Portfólio&body=${encodeURIComponent(body)}`;
+        }
+    </script>
+</body>
+
+</html>
